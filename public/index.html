@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>HaxBola — futebol multiplayer</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='white' stroke='black' stroke-width='8'/></svg>" />
+</head>
+<body>
+  <!-- Nickname -->
+  <section id="screen-name" class="screen active">
+    <div class="card center-card">
+      <h1 class="logo">Hax<span>Bola</span></h1>
+      <p class="muted">Futebol multiplayer no navegador</p>
+      <form id="form-name">
+        <label>Seu apelido
+          <input id="input-name" maxlength="20" autocomplete="off" placeholder="Ex: Craque10" required />
+        </label>
+        <button type="submit" class="btn primary">Jogar</button>
+      </form>
+      <p id="conn-status" class="muted small"></p>
+    </div>
+  </section>
+
+  <!-- Lobby -->
+  <section id="screen-lobby" class="screen">
+    <div class="card lobby-card">
+      <header class="lobby-header">
+        <h1 class="logo small-logo">Hax<span>Bola</span></h1>
+        <div class="muted">Jogando como <b id="lobby-name"></b> <button id="btn-change-name" class="link">alterar</button></div>
+      </header>
+      <div class="lobby-actions">
+        <button id="btn-create" class="btn primary">+ Criar sala</button>
+        <button id="btn-refresh" class="btn">Atualizar</button>
+        <form id="form-code" class="code-form">
+          <input id="input-code" maxlength="6" placeholder="Código da sala" autocomplete="off" />
+          <button class="btn" type="submit">Entrar</button>
+        </form>
+      </div>
+      <div class="table-wrap">
+        <table class="rooms">
+          <thead><tr><th>Sala</th><th>Jogadores</th><th>Status</th><th></th></tr></thead>
+          <tbody id="room-list"></tbody>
+        </table>
+        <p id="room-empty" class="muted empty">Nenhuma sala pública no momento. Crie a sua!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Room -->
+  <section id="screen-room" class="screen">
+    <div class="room-top">
+      <div class="room-title"><span id="room-name"></span> <span id="room-badge" class="badge"></span></div>
+      <div class="scoreboard">
+        <span class="team-red-bg score" id="score-red">0</span>
+        <span class="score-sep">-</span>
+        <span class="team-blue-bg score" id="score-blue">0</span>
+        <span class="clock" id="clock">00:00</span>
+      </div>
+      <div class="room-buttons">
+        <span id="ping" class="muted small"></span>
+        <button id="btn-invite" class="btn small">Convidar</button>
+        <button id="btn-panel" class="btn small">Times (Esc)</button>
+        <button id="btn-leave" class="btn small danger">Sair</button>
+      </div>
+    </div>
+    <div class="game-area">
+      <canvas id="canvas"></canvas>
+      <div id="panel" class="panel">
+        <div class="panel-inner">
+          <div class="teams">
+            <div class="team-col">
+              <h3 class="team-red-bg">Vermelho</h3>
+              <ul id="list-red" class="plist"></ul>
+              <button class="btn join-btn" data-team="1">Entrar</button>
+            </div>
+            <div class="team-col">
+              <h3 class="spec-bg">Espectadores</h3>
+              <ul id="list-spec" class="plist"></ul>
+              <button class="btn join-btn" data-team="0">Entrar</button>
+            </div>
+            <div class="team-col">
+              <h3 class="team-blue-bg">Azul</h3>
+              <ul id="list-blue" class="plist"></ul>
+              <button class="btn join-btn" data-team="2">Entrar</button>
+            </div>
+          </div>
+          <div id="host-controls" class="host-controls">
+            <div class="settings-row">
+              <label>Gols p/ vencer
+                <select id="set-score">
+                  <option value="0">Sem limite</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option>
+                </select>
+              </label>
+              <label>Tempo (min)
+                <select id="set-time">
+                  <option value="0">Sem limite</option><option>1</option><option>2</option><option>3</option><option>5</option><option>7</option><option>10</option><option>15</option>
+                </select>
+              </label>
+              <label>Visibilidade
+                <select id="set-public"><option value="1">Pública</option><option value="0">Privada</option></select>
+              </label>
+              <label>Senha
+                <input id="set-password" maxlength="30" placeholder="(nenhuma)" />
+              </label>
+            </div>
+            <div class="settings-row">
+              <button id="btn-random" class="btn">Times aleatórios</button>
+              <button id="btn-pause" class="btn">Pausar (P)</button>
+              <button id="btn-start" class="btn primary">Iniciar partida</button>
+            </div>
+          </div>
+          <p id="guest-note" class="muted small center">Aguardando o administrador iniciar a partida. Controles: setas/WASD para mover, Espaço/X para chutar.</p>
+        </div>
+      </div>
+      <div id="touch-controls" class="touch-controls">
+        <div id="joy" class="joy"><div id="joy-knob" class="joy-knob"></div></div>
+        <button id="touch-kick" class="touch-kick">CHUTE</button>
+      </div>
+    </div>
+    <div class="chat">
+      <div id="chat-log" class="chat-log"></div>
+      <form id="form-chat"><input id="input-chat" maxlength="140" autocomplete="off" placeholder="Pressione Enter para conversar  —  /avatar XX muda seu avatar" /></form>
+    </div>
+  </section>
+
+  <!-- Create room modal -->
+  <div id="modal-create" class="modal">
+    <form id="form-create" class="card modal-card">
+      <h2>Criar sala</h2>
+      <label>Nome da sala<input id="create-name" maxlength="40" /></label>
+      <div class="radio-row">
+        <label class="radio"><input type="radio" name="vis" value="public" checked /> Pública <span class="muted small">(aparece na lista)</span></label>
+        <label class="radio"><input type="radio" name="vis" value="private" /> Privada <span class="muted small">(só com código/link)</span></label>
+      </div>
+      <label>Senha (opcional)<input id="create-password" maxlength="30" autocomplete="off" /></label>
+      <label>Máximo de jogadores
+        <select id="create-max"><option>4</option><option>6</option><option>8</option><option>10</option><option selected>12</option><option>16</option><option>20</option></select>
+      </label>
+      <div class="modal-buttons">
+        <button type="button" class="btn" data-close>Cancelar</button>
+        <button type="submit" class="btn primary">Criar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Password modal -->
+  <div id="modal-password" class="modal">
+    <form id="form-password" class="card modal-card">
+      <h2>Sala protegida</h2>
+      <p class="muted" id="password-room"></p>
+      <label>Senha<input id="input-password" type="password" maxlength="30" autocomplete="off" /></label>
+      <p id="password-error" class="error small"></p>
+      <div class="modal-buttons">
+        <button type="button" class="btn" data-close>Cancelar</button>
+        <button type="submit" class="btn primary">Entrar</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/client.js"></script>
+</body>
+</html>
