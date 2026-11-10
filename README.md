@@ -19,6 +19,14 @@ npm start          # http://localhost:3000  (use PORT=xxxx para mudar)
 
 Convide amigos pelo botão **Convidar** (link `http://host:3000/#CODIGO`) ou pelo código da sala.
 
+## Publicando (grátis) no Render
+
+O repositório já tem `render.yaml`. Em https://render.com: **New → Blueprint**, escolha este repositório e confirme.
+O Render gera uma URL pública `https://haxbola-xxxx.onrender.com` (WebSocket incluso).
+No plano gratuito o servidor "dorme" após ~15 min sem acesso e leva ~1 min para acordar no primeiro acesso.
+
+Também há um `Dockerfile` para qualquer host que rode containers (Fly.io, Railway, VPS...).
+
 ## Estrutura
 
 - `server.js` — HTTP estático, WebSocket, lobby e salas
