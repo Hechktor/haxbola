@@ -21,7 +21,9 @@ Convide amigos pelo botão **Convidar** (link `http://host:3000/#CODIGO`) ou pel
 
 ## Publicando (grátis) no Render
 
-O repositório já tem `render.yaml`. Em https://render.com: **New → Blueprint**, escolha este repositório e confirme.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Hechktor/haxbola)
+
+Clique no botão acima (ou em https://render.com: **New → Blueprint** e escolha este repositório) e confirme. O `render.yaml` já configura tudo.
 O Render gera uma URL pública `https://haxbola-xxxx.onrender.com` (WebSocket incluso).
 No plano gratuito o servidor "dorme" após ~15 min sem acesso e leva ~1 min para acordar no primeiro acesso.
 
